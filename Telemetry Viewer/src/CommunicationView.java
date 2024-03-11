@@ -21,7 +21,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import net.miginfocom.swing.MigLayout;
-
+import java.awt.Color;
 @SuppressWarnings("serial")
 public class CommunicationView extends JPanel {
 	
@@ -29,22 +29,55 @@ public class CommunicationView extends JPanel {
 	
 	private JToggleButton settingsButton;
 	private JButton importButton;
+	private JButton importFileButton;
 	private JButton exportButton;
 	private JButton helpButton;
 	private JButton connectionButton;
-
+	private JButton DownButton;
+	private JButton UpButton;
+	
 	/**
 	 * Private constructor to enforce singleton usage.
 	 */
 	private CommunicationView () {
 		
 		super();
-		setLayout(new MigLayout("wrap 6, gap " + Theme.padding  + ", insets " + Theme.padding, "[][][][]push[]push[]"));
+		setLayout(new MigLayout("wrap 7, gap " + Theme.padding  + ", insets " + Theme.padding, "[][][][][][]push[]"));
+
+
+
+		UpButton = new JButton("^");
+		UpButton.setFocusable(false);
+		UpButton.setRolloverEnabled(false);
+		UpButton.setBackground(Color.LIGHT_GRAY);
+		UpButton.addActionListener(event -> {
+			redraw();
+		});
 		
 		// settings
 		settingsButton = new JToggleButton("Settings");
 		settingsButton.setSelected(SettingsView.instance.isVisible());
 		settingsButton.addActionListener(event -> showSettings(settingsButton.isSelected()));
+		
+		importFileButton = new JButton("Import File");
+		importFileButton.setFocusable(false);
+		importFileButton.setRolloverEnabled(false);
+		importFileButton.setBackground(Color.LIGHT_GRAY);
+		importFileButton.addActionListener(event -> {
+			String[] files = {"/home/kxr/Desktop/test.txt"};
+			ConnectionsController.importFiles(files);
+		});
+		
+		DownButton = new JButton("V");
+		DownButton.setFocusable(false);
+		DownButton.setRolloverEnabled(false);
+		DownButton.setBackground(Color.LIGHT_GRAY);
+		DownButton.addActionListener(event -> {
+			removeAll();
+			repaint();
+			add(UpButton);
+
+		});
 		
 		// import
 		importButton = new JButton("Import");
@@ -211,7 +244,9 @@ public class CommunicationView extends JPanel {
 			exportButton.setEnabled(!ConnectionsController.importing && !ConnectionsController.exporting && connectionsDefined);
 			
 			removeAll();
+			add(DownButton);
 			add(settingsButton);
+			add(importFileButton);
 			add(importButton);
 			add(exportButton);
 			add(helpButton);
